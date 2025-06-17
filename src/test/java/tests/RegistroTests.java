@@ -43,7 +43,6 @@ public class RegistroTests {
             driver.quit();
         }
     }
-
     @Test
     @Order(1)
     @DisplayName("Cenario 101: Registro com credenciais válidas")
@@ -57,8 +56,10 @@ public class RegistroTests {
         String funcao = "Administrador";
         String entidade = "SerEducacional";
 
-        paginaRegistro.realizarRegistro(nome,sobrenome,email,senha, funcao,entidade);
-
+        PaginaLogin paginaLoginRetorno = paginaRegistro.realizarRegistro(nome, sobrenome, email, senha, funcao, entidade);
+        Assertions.assertNotNull(paginaLoginRetorno, "O registro falhou e não retornou para a página de login.");
+        String urlAtual = driver.getCurrentUrl();
+        Assertions.assertTrue(urlAtual.contains("login"), "Deveria estar na página de login após registro");
     }
     @Test
     @Order(2)
@@ -66,15 +67,16 @@ public class RegistroTests {
     void testeRegistroCampoNomeEmBranco(){
         PaginaRegistro paginaRegistro = paginaLogin.navegarParaRegistro();
 
-        String nome= "";
         String sobrenome = "Fonte";
         String email = "fonte" + System.currentTimeMillis() + "@teste.com";
         String senha = "senha12345";
         String funcao = "Administrador";
         String entidade = "SerEducacional";
 
-
         paginaRegistro.realizarRegistro("", sobrenome, email, senha, funcao, entidade);
+
+        String urlAtual = driver.getCurrentUrl();
+        Assertions.assertTrue(urlAtual.contains("register"), "Deveria permanecer na página de registro");
     }
     @Test
     @Order(3)

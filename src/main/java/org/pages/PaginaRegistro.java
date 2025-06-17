@@ -1,5 +1,6 @@
 package org.pages;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -29,6 +30,10 @@ public class PaginaRegistro extends Pagina {
     @FindBy(name = "newEntityName")
     private WebElement campoEntidade;
 
+    @FindBy(css = ".alert.alert-success")
+    private WebElement mensagemSucesso;
+
+
     public PaginaRegistro(WebDriver driver) {
         super(driver);
     }
@@ -44,7 +49,17 @@ public class PaginaRegistro extends Pagina {
         campoEntidade.sendKeys(entidade);
         botaoRegistrar.click();
 
-        try { Thread.sleep(5000); } catch (InterruptedException e) { e.printStackTrace(); }
+        try { Thread.sleep(3000); } catch (InterruptedException e) { e.printStackTrace(); }
         return new PaginaLogin(driver);
+    }
+
+    public String getMensagemDeSucesso() {
+        wait.until(ExpectedConditions.visibilityOf(mensagemSucesso));
+        return mensagemSucesso.getText();
+    }
+
+    public String getMensagemDeValidacaoNativa(WebElement campo) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        return (String) js.executeScript("return arguments[0].validationMessage;", campo);
     }
 }
